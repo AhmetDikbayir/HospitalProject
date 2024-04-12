@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.LinkedList;
 
 import static Hospital_Project.HospitalService.*;
@@ -199,9 +200,25 @@ public class DoctorService implements Methods{
         System.out.println("---------- HASTANEDE BULUNAN DOKTORLARİMİZ -----------");
         System.out.printf("%-13s | %-15s | %-15s\n", "DOKTOR İSİM", "DOKTOR SOYİSİM", "DOKTOR UNVAN");
         System.out.println("------------------------------------------------------");
-        for (Doctor w : doctorList) {
-            System.out.printf("%-13s | %-15s | %-15s\n", w.getIsim(), w.getSoyIsim(), w.getUnvan());
+
+        String doctorListQuery = "SELECT * FROM doctors";
+        try {
+            Statement st = con.createStatement();
+            ResultSet rs = st.executeQuery(doctorListQuery);
+            while(rs.next()){
+                int id = rs.getInt("doctor_id");
+                String name = rs.getString("doctor_name");
+                String surName = rs.getString("doctor_surname");
+                String title1 = rs.getString("doctor_title");
+                System.out.printf("%-13s | %-15s | %-15s | %-15s\n", id, title1, name, surName);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
+
+//        for (Doctor w : doctorList) {
+//            System.out.printf("%-13s | %-15s | %-15s\n", w.getIsim(), w.getSoyIsim(), w.getUnvan());
+//        }
     }
 
     public Doctor findDoctor(String unvan) {
